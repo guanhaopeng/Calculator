@@ -1,0 +1,315 @@
+<!--
+    Project: Calculator
+    Version: 3
+    Autor: Guanhao Peng
+    Created: 11/01/2020
+    Updated: 11/01/2020
+    Notes: add brackets, backspace, decimals
+-->
+
+<!DOCTYPE html5>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Calculator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <!-- JQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+        body {
+            margin-top: 200px;
+            font-size: 28px;
+        }
+
+        button {
+            width: 40px;
+        }
+
+        input {
+            display: block;
+        }
+
+        #history_display {
+            height: 20px;
+            text-align: right;
+        }
+
+        #current_display {
+            height: 40px;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Calc V3</h1>
+    <h6>Supports brackets and keyboard inputs</h6>
+    <div class='col-12'>
+        <table>
+            <tr>
+                <td colspan="5">
+                    <div>
+                        <label for="history_display" class="sr-only"></label>
+                        <input class="" id="history_display" name="history_display" disabled></input>
+
+                        <label for="current_display" class="sr-only"></label>
+                        <input class="" id="current_display" name="current_display" autofocus></input>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-outline-dark bracket" id="bracket_open" value="(">(</button></td>
+                <td><button class="btn btn-outline-dark bracket" id="bracket_close" value=")">)</button></td>
+                <td><button class="btn btn-outline-dark" id="clearButton" value="c">C</td>
+                <td><button class="btn btn-outline-dark " id="backspace" value="backspace">&#9003;</button> </td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-outline-dark number" id="button1" value="1">1</button></td>
+                <td><button class="btn btn-outline-dark number" id="button2" value="2">2</button></td>
+                <td><button class="btn btn-outline-dark number" id="button3" value="3">3</button></td>
+                <td><button class="btn btn-outline-dark operation" id="addButton" value="+">+</button></td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-outline-dark number" id="button4" value="4">4</button></td>
+                <td><button class="btn btn-outline-dark number" id="button5" value="5">5</button></td>
+                <td><button class="btn btn-outline-dark number" id="button6" value="6">6</button></td>
+                <td><button class="btn btn-outline-dark operation" id="subtractButton" value="-">-</button></td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-outline-dark number" id="button7" value="7">7</button></td>
+                <td><button class="btn btn-outline-dark number" id="button8" value="8">8</button></td>
+                <td><button class="btn btn-outline-dark number" id="button9" value="9">9</button></td>
+                <td><button class="btn btn-outline-dark operation" id="multiplyButton" value="*"> &#215;</button></td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-outline-dark number" id="decimal_point" value=".">.</button></td>
+                <td><button class="btn btn-outline-dark number" id="button0" value="0">0</button></td>
+                <td><button class="btn btn-outline-dark" id="equalsButton" value="=">=</button></td>
+                <td><button class="btn btn-outline-dark operation" id="divideButton" value="/">&#247;</button></td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div id='output'>
+        <!-- 
+      
+    -->
+    </div>
+    <div id='output2'>
+        <!-- 
+        
+      -->
+    </div>
+
+    <script>
+        var sign = number = null;
+        var number = null;
+        var numbers_array = new Array;
+        var hist = "";
+        var last_result = "";
+        var save_result = false;
+        var operation_signs = ['+', '-', '*', '/'];
+        var cal = result = '';
+
+        $('button').click(function () {
+            var user_input = document.getElementById(event.target.id);
+            function reset_operation() {
+                $('.operation').css({
+                    "background-color": "white", "color": "black"
+                });
+            }
+
+            //check if the user wants to carry on base on current result
+            if (!user_input.className.includes("operation")) {
+                save_result = false;
+            }
+
+            if (user_input.className.includes("bracket")) {
+                if (number != null) {
+                    numbers_array.push(number);
+                    number = null;
+                }
+                //brackets open
+                if (user_input.value == '(' && (
+                    operation_signs.includes(numbers_array[numbers_array.length - 1])
+                    || numbers_array[0] == null)
+                ) {
+                    set_both_display('(');
+                    numbers_array.push('(');
+                }
+
+                //brackets close
+                if (user_input.value == ')'
+                    && numbers_array[numbers_array.length - 1] != ')'
+                    && hist.includes('(')) {
+
+                    hist = numbers_array.join('');
+                    update_both(')');
+                    numbers_array.push(')');
+                }
+            }
+            //number input -----------------------------------------------------------------------------
+            if (user_input.className.includes("number")) {
+
+                //first digit
+                if (!number) {
+                    var first_digit = new String(user_input.value);
+                    number = first_digit;
+                } else {
+                    //complete the number input
+                    number = number + user_input.value;
+                }
+                set_both_display(number);
+            }
+
+
+            //operation sign input ----------------------------------------------------------------------
+            if (user_input.className.includes("operation")) {
+                //css
+                $('.operation').css({
+                    "background-color": "white", "color": "black"
+                });
+                $('#' + event.target.id).css({
+                    "background-color": "grey", "color": "white"
+                });
+
+                //check if the user wants to carry on base on current result
+                if (save_result == true) {
+                    number = last_result;
+                    save_result = false;
+                }
+
+                switch (user_input.value) {
+                    case ("+"):
+                        sign = "+";
+                        break;
+                    case ("-"):
+                        sign = "-";
+                        break;
+                    case ("*"):
+                        sign = "*";
+                        break;
+                    case ("/"):
+                        sign = "/";
+                        break;
+                }
+                set_current(sign);
+
+
+                //check if last input was a number, insert number and sign into array
+                if (number != null) {
+                    numbers_array.push(number);
+                }
+
+                //check if the user wants to change sign
+                var last_input = numbers_array[numbers_array.length - 1];
+
+                if (last_input == '+' || last_input == '-'
+                    || last_input == '*' || (last_input == '/')) {
+                    numbers_array[numbers_array.length - 1] = sign;
+                } else {
+                    numbers_array.push(sign);
+                }
+
+                hist = numbers_array.join('');
+                set_hist(hist);
+                number = sign = null;
+            }
+
+
+            //equal ----------------------------------------------------------------------------
+            if (user_input.value == "=") {
+                calculate();
+            }
+
+
+            //reset -----------------------------------------------------------------------------
+            if (user_input.value == "c") {
+                $("#history_display").val('');
+                $('.operation').css({
+                    "background-color": "white", "color": "black"
+                });
+                restart();
+
+            };
+
+            if (user_input.value == "backspace") {
+                number = number.substr(0, number.length - 1);
+                set_both_display(number);
+            }
+
+
+            // test1(number);
+            test1(number.charAt(number.length - 1));
+            test2(number);
+
+            // var test1 = Math.pow(2, 3);
+            // var test = eval(test1);
+            // $("#output").text(test1);
+
+            //end of click 
+
+        });
+
+        function test1(a) {
+            $("#output").text(a);
+        }
+
+        function test2(a) {
+            $("#output2").text(a);
+        }
+
+        function update_both(a) {
+            set_current(a);
+            set_hist(hist + a);
+        }
+
+        function set_current(a) {
+            $("#current_display").val(a);
+        }
+
+        function set_hist(a) {
+            $("#history_display").val(a);
+        }
+
+        function set_both_display(a) {
+            set_current(a);
+            hist = numbers_array.join('') + a;
+            set_hist(hist);
+        }
+
+        function restart() {
+            hist = '';
+            number = null;
+            numbers_array = [];
+            $("#current_display").val("");
+        }
+
+        function calculate() {
+            calc = $("#history_display").val();
+            result = eval(calc);
+            result = result.toFixed(15);
+            result = parseFloat(result);
+            restart();
+            set_current(result);
+            last_result = result;
+            save_result = true;
+        }
+    </script>
+
+
+</body>
+
+
+
+</html>

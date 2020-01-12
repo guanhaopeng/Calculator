@@ -1,0 +1,179 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>Calculator</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+  <!-- JQuery-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <style>
+    body {
+      margin-top: 500px;
+      font-size: 28px;
+    }
+
+    button {
+      width: 40px;
+    }
+
+    input {
+      display: block;
+    }
+
+    #current_display {
+      height: 20px;
+      text-align: right;
+    }
+
+    #hist_display {
+      height: 40px;
+      text-align: right;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='col-12'>
+    <table>
+      <tr>
+        <td colspan="4">
+          <div>
+            <label for="current_display" class="sr-only"></label>
+            <input class="" id="current_display" name="current_display" disabled></input>
+
+            <label for="hist_display" class="sr-only"></label>
+            <input class="" id="hist_display" name="hist_display" autofocus></input>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td><button class="btn btn-outline-dark number" id="button1" value="1">1</button></td>
+        <td><button class="btn btn-outline-dark number" id="button2" value="2">2</button></td>
+        <td><button class="btn btn-outline-dark number" id="button3" value="3">3</button></td>
+        <td><button class="btn btn-outline-dark operation" id="addButton" value="+">+</button></td>
+      </tr>
+      <tr>
+        <td><button class="btn btn-outline-dark number" id="button4" value="4">4</button></td>
+        <td><button class="btn btn-outline-dark number" id="button5" value="5">5</button></td>
+        <td><button class="btn btn-outline-dark number" id="button6" value="6">6</button></td>
+        <td><button class="btn btn-outline-dark operation" id="subtractButton" value="-">-</button></td>
+      </tr>
+      <tr>
+        <td><button class="btn btn-outline-dark number" id="button7" value="7">7</button></td>
+        <td><button class="btn btn-outline-dark number" id="button8" value="8">8</button></td>
+        <td><button class="btn btn-outline-dark number" id="button9" value="9">9</button></td>
+        <td><button class="btn btn-outline-dark operation" id="multiplyButton" value="*">*</button></td>
+      </tr>
+      <tr>
+        <td><button class="btn btn-outline-dark" id="clearButton" value="c">C</button></td>
+        <td><button class="btn btn-outline-dark number" id="button0" value="0">0</button></td>
+        <td><button class="btn btn-outline-dark" id="equalsButton" value="=">=</button></td>
+        <td><button class="btn btn-outline-dark operation" id="divideButton" value="/">&#247;</button></td>
+      </tr>
+    </table>
+  </div>
+
+
+  <span id='output'>
+    <!-- 
+      
+    --></span>
+
+  <script>
+    var sign = first_num = second_num = null;
+    $('button').click(function () {
+      var user_input = document.getElementById(event.target.id);
+
+      function reset_operation() {
+        $('.operation').css({
+          "background-color": "white", "color": "black"
+        });
+      }
+
+      //number input
+      if (user_input.className.includes("number")) {
+        //first nuber
+        if (sign == null) {
+          if (!first_num) {
+            var first_input = new String(user_input.value);
+          } else {
+            first_input = $("#current_display").val() + user_input.value;
+          }
+          first_num = Number(first_input);
+          $("#current_display").val(first_num);
+        }
+
+        //second nuber
+        else {
+          if (!second_num) {
+            var second_input = new String(user_input.value);
+          } else {
+            second_input = $("#current_display").val() + user_input.value;
+          }
+          second_num = Number(second_input);
+          $("#current_display").val(second_num);
+        }
+      }
+
+
+      //operation sign input
+      if (user_input.className.includes("operation")) {
+        $('.operation').css({
+          "background-color": "white", "color": "black"
+        });
+        switch (user_input.value) {
+          case ("+"):
+            sign = "+";
+            break;
+          case ("-"):
+            sign = "-";
+            break;
+          case ("*"):
+            sign = "*";
+            break;
+          case ("/"):
+            sign = "/";
+            break;
+        }
+        $('#' + event.target.id).css({
+          "background-color": "grey", "color": "white"
+        });
+        $("#current_display").val("");
+      }
+
+
+      //equal
+      if (user_input.value == "=") {
+        var result = eval(first_num + sign + second_num);
+        $("#current_display").val(result);
+        sign = first_num = second_num = null;
+      }
+
+
+      //reset
+      if (user_input.value == "c") {
+        $("#current_display").val('');
+        $('.operation').css({
+          "background-color": "white", "color": "black"
+        });
+        sign = first_num = second_num = null;
+      };
+    });
+
+
+  </script>
+
+
+</body>
+
+
+
+</html>
