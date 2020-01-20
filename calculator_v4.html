@@ -197,8 +197,9 @@
 
 
                 //check if the user wants to carry on base on current result
-                if (get_current == last_result) {
-                    number = last_result;
+                if (save_result == true) {
+                    number = last_result
+                    save_result = false;
 
                 }
 
